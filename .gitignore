@@ -1,0 +1,7 @@
+/*
+!.gitignore
+!index.js
+!package.json
+!package-lock.json
+!client/
+!server/

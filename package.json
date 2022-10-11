@@ -1,0 +1,20 @@
+{
+  "name": "crud-app",
+  "description": "to be named later",
+  "version": "0.1.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "postinstall": "echo * * * TODO * * * && echo install and build server && echo install and build client && echo * * * TODO * * *",
+    "start": "echo 'npm start' not implemented, try 'npm run devstart'",
+    "devstart": "run-p start-devserver start-devclient",
+    "start-devserver": "npm start --prefix ./server/",
+    "start-devclient": "npm start --prefix ./client/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sauli Kylmänen",
+  "license": "MIT",
+  "devDependencies": {
+    "npm-run-all": "^4.1.5"
+  }
+}
