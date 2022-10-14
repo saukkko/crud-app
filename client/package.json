@@ -1,6 +1,6 @@
 {
   "private": true,
-  "proxy": "http://localhost:3001",
+  "proxy": "http://localhost:53000",
   "dependencies": {},
   "devDependencies": {
     "@testing-library/jest-dom": "^5.16.5",
