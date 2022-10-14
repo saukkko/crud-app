@@ -4,8 +4,7 @@
 !.gitignore
 
 !Dockerfile
-!nginx.conf
-!start-express.sh
+!docker_assets/
 
 !client/
 !server/

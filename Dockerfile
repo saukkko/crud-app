@@ -2,6 +2,7 @@ FROM node:lts-alpine as setup
 
 ARG NODE_ENV=""
 COPY master.zip /app/
+COPY docker_assets/copy-app.sh /app/
 RUN apk update && apk upgrade && apk add unzip tar xz
 RUN npm -g i npm
 
@@ -15,12 +16,7 @@ RUN npm install && npm run build
 
 # TODO:
 # create shell script to do this ugly stuff there and RUN script.sh
-RUN mkdir -pv wrk/client wrk/server && \
-    cp -a client/build/* wrk/client/ && \
-    cp -a server/build/* wrk/server/ && \
-    cp -a server/package.json wrk/server/ && \
-    cp -a server/package-lock.json wrk/server/ && \
-    cp -a index.js package.json package-lock.json wrk/
+RUN /app/copy-app.sh
 
 WORKDIR /app/wrk
 RUN tar caf app.tar.xz --numeric-owner --owner=${UID} *
@@ -48,7 +44,6 @@ RUN tar xvf app.tar.xz -C /app
 WORKDIR /app
 RUN npm install
 
-
 FROM nginx:alpine
 COPY --from=install /app /app
 COPY --from=install /app_cache /app_cache
@@ -67,8 +62,14 @@ RUN adduser -u ${UID} -h /app_cache -s /sbin/nologin -D -G nogroup ${NODE_USER}
 RUN apk update && apk upgrade && apk add nodejs npm s6
 RUN npm i -g npm
 
-EXPOSE 80
+EXPOSE 8080
 
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY start-express.sh /docker-entrypoint.d/start-express.sh
+COPY docker_assets/server.conf /etc/nginx/conf.d/default.conf
+COPY docker_assets/nginx.conf /etc/nginx/nginx.conf
+COPY docker_assets/start-express.sh /docker-entrypoint.d/start-express.sh
+
+RUN mkdir -pv /var/log/app_engine
+RUN mkdir -pv /app/client/_ah && \
+    echo "OK" > /app/client/_ah/health
+
 RUN export USER=${NODE_USER}
