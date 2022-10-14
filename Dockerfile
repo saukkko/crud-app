@@ -28,7 +28,7 @@ RUN tar caf app.tar.xz --numeric-owner --owner=${UID} *
 
 FROM node:lts-alpine as install
 ARG NODE_ENV="production"
-ARG USER="app"
+ARG NODE_USER="app"
 ARG UID="3000"
 
 ENV NODE_ENV=${NODE_ENV}
@@ -38,7 +38,7 @@ ENV NODE_ENV=${NODE_ENV}
 RUN apk update && apk upgrade && apk add tar xz
 RUN npm -g i npm
 
-RUN adduser -u ${UID} -h /app_cache -s /sbin/nologin -D -G nogroup ${USER} && \
+RUN adduser -u ${UID} -h /app_cache -s /sbin/nologin -D -G nogroup ${NODE_USER} && \
     mkdir -pv /app && \
     chown ${UID} /app
 COPY --chown=${UID} --from=build /app/wrk/app.tar.xz /
@@ -49,21 +49,20 @@ WORKDIR /app
 RUN npm install
 
 
-FROM scratch as run
-COPY --from=nginx:alpine / /
+FROM nginx:alpine
 COPY --from=install /app /app
 COPY --from=install /app_cache /app_cache
 
 ARG UID="3000"
-ARG USER="app"
+ARG NODE_USER="app"
 ARG NODE_ENV="production"
 ARG NODE_PORT=53000
 
-ENV USER=${USER}
+ENV NODE_USER=${NODE_USER}
 ENV NODE_ENV=${NODE_ENV}
 ENV NODE_PORT=${NODE_PORT}
 
-RUN adduser -u ${UID} -h /app_cache -s /sbin/nologin -D -G nogroup ${USER}
+RUN adduser -u ${UID} -h /app_cache -s /sbin/nologin -D -G nogroup ${NODE_USER}
 
 RUN apk update && apk upgrade && apk add nodejs npm s6
 RUN npm i -g npm
@@ -72,6 +71,4 @@ EXPOSE 80
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY start-express.sh /docker-entrypoint.d/start-express.sh
-RUN export USER=${USER}
-
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+RUN export USER=${NODE_USER}
