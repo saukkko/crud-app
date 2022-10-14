@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "postinstall": "echo * * * TODO * * * && echo install and build server && echo install and build client && echo * * * TODO * * *",
+    "postinstall": "npm install --prefix client && npm install --prefix server",
     "start": "echo 'npm start' not implemented, try 'npm run devstart'",
     "devstart": "run-p start-devserver start-devclient",
     "start-devserver": "npm start --prefix ./server/",

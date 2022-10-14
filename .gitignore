@@ -1,7 +1,8 @@
 /*
 !.gitignore
-!index.js
+!Dockerfile
 !package.json
 !package-lock.json
 !client/
 !server/
+!.vscode/
