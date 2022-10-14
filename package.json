@@ -5,8 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "postinstall": "npm install --prefix client && npm install --prefix server",
-    "start": "echo 'npm start' not implemented, try 'npm run devstart'",
+    "postinstall": "npm install --prefix server",
+    "build": "npm run build --prefix client && npm run build --prefix server",
+    "start": "run-p start-server serve-static",
+    "start-server": "node server/index.js",
+    "serve-static": "serve client/static",
     "devstart": "run-p start-devserver start-devclient",
     "start-devserver": "npm start --prefix ./server/",
     "start-devclient": "npm start --prefix ./client/",
@@ -14,7 +17,8 @@
   },
   "author": "Sauli Kylmänen",
   "license": "MIT",
-  "devDependencies": {
-    "npm-run-all": "^4.1.5"
+  "dependencies": {
+    "npm-run-all": "^4.1.5",
+    "serve": "^14.0.1"
   }
 }
