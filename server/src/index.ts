@@ -1,7 +1,9 @@
 import express from "express";
 import { api } from "./Routes.js";
 
-const PORT = isNaN(Number(process.env.PORT)) ? 53000 : Number(process.env.PORT);
+const PORT = isNaN(Number(process.env.NODE_PORT))
+  ? 53000
+  : Number(process.env.NODE_PORT);
 
 const app = express();
 

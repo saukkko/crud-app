@@ -7,9 +7,8 @@
   "scripts": {
     "postinstall": "npm install --prefix server",
     "build": "npm run build --prefix client && npm run build --prefix server",
-    "start": "run-p start-server",
+    "start": "node index.js",
     "start-server": "node server/index.js",
-    "serve-static": "serve client/static",
     "devstart": "run-p start-devserver start-devclient",
     "start-devserver": "npm start --prefix ./server/",
     "start-devclient": "npm start --prefix ./client/",

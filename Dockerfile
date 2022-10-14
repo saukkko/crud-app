@@ -24,7 +24,7 @@ RUN mkdir -pv wrk/client wrk/server && \
     cp -a server/build/* wrk/server/ && \
     cp -a server/package.json wrk/server/ && \
     cp -a server/package-lock.json wrk/server/ && \
-    cp -a package.json package-lock.json wrk/
+    cp -a index.js package.json package-lock.json wrk/
 
 WORKDIR /app/wrk
 RUN tar caf app.tar.xz --numeric-owner --owner=${UID} *
@@ -32,13 +32,10 @@ RUN tar caf app.tar.xz --numeric-owner --owner=${UID} *
 
 FROM node:lts-alpine as install
 ARG NODE_ENV="production"
-ARG PORT=3000
 ARG USER="nodeuser"
 ARG UID="3000"
 
 ENV NODE_ENV=${NODE_ENV}
-ENV PORT=${PORT}
-EXPOSE ${PORT}
 
 # ENTRYPOINT [ "/bin/ash" ]
 
@@ -55,9 +52,33 @@ RUN tar xvf app.tar.xz -C /app
 WORKDIR /app
 RUN npm install
 
-FROM install as run
+FROM scratch as run
+COPY --from=nginx:alpine / /
+COPY --from=install /app /app
+COPY --from=install /app_cache /app_cache
+
+ARG UID="3000"
+ARG USER="nodeuser"
+ARG NODE_ENV="production"
+ARG NODE_PORT=53000
+
+ENV NODE_ENV=${NODE_ENV}
+ENV NODE_PORT=${NODE_PORT}
+
+RUN adduser -u ${UID} -h /app_cache -s /sbin/nologin -D -G nogroup ${USER}
+
+RUN apk update && apk upgrade && apk add nodejs npm
+RUN npm i -g npm
+
+EXPOSE 80
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 USER ${UID}
 WORKDIR /app
 
-ENTRYPOINT [ "/bin/ash" ]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
+
+USER 0
+
+# ENTRYPOINT [ "/bin/ash" ]
 # ENTRYPOINT [ "npm" "start" ]

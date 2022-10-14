@@ -1,8 +1,14 @@
 /*
+
+!.vscode/
 !.gitignore
+
 !Dockerfile
-!package.json
-!package-lock.json
+!nginx.conf
+
 !client/
 !server/
-!.vscode/
+
+!package.json
+!package-lock.json
+!index.js
