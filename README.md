@@ -1,4 +1,8 @@
-# Setup
+# crud-app
+
+(to be named later)
+
+## Setup
 
 Note: `npm i` does not install client deps by default.
 
@@ -12,6 +16,6 @@ Note: `npm i` does not install client deps by default.
 8. server will listen port 53000 by default and client usually port 3000.
 9. try opening http://localhost:3000
 
-# Issues
+## Issues
 
 For some reason firestore authentication does not work on unix systems. Probably badly formatted path and/or wrong line feed character and/or quotation mark error.
